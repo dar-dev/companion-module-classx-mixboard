@@ -1,8 +1,6 @@
-# MixBoard Companion Module
+# MixBoard® Companion Module
 
-This module allows [Bitfocus Companion](https://bitfocus.io/companion) to interface with the **MixBoard** video mixing application over TCP. It supports real-time control of VideoInput switch, transitions, channels and keyers with full feedback support.
-
----
+This module allows [Bitfocus Companion](https://bitfocus.io/companion) to interface with the **MixBoard®** video mixing application over TCP. It supports real-time control of VideoInput switch, transitions, channels and keyers with full feedback support.
 
 ## Features
 
@@ -12,8 +10,6 @@ This module allows [Bitfocus Companion](https://bitfocus.io/companion) to interf
 - Trigger transitions (`CUT`, `FADE`, `TR1`–`TR4`)
 - Toggle keyers (`BKGD`, `KEY1`–`KEY4`)
 - Real-time status feedback
-
----
 
 ## Module Configuration
 
@@ -28,8 +24,6 @@ To configure this module in Companion, fill in the following fields:
 
 Ensure your network allows access to these ports.
 
----
-
 ## Actions
 
 Once the module is configured, the following actions become available in Companion:
@@ -42,7 +36,6 @@ Once the module is configured, the following actions become available in Compani
 - **Toggle Keyer** – Enable/disable keyers (`KEY1`, `KEY2`, etc.) to program/preview according to 'Play to preview' option
 - **Key link** – Enable/disable keyer transition link option to the given keyer (`KEY1`, `KEY2`, etc.) 
 - **Execute command** – Execute custom MBC command
----
 
 ## Feedbacks
 
@@ -59,15 +52,37 @@ The module provides feedbacks to reflect the current state of the MixBoard:
 
 These can be used to update button colors or labels in Companion dynamically.
 
----
+## Presets
 
-## Connection and Lifecycle
+The module provides built-in button presets for quick configuration inside Bitfocus Companion. These presets are grouped into functional categories and include real-time feedback for an interactive user experience.
 
-- **`init(config)`** – Initializes the module, opens TCP connections, and sets up actions/feedbacks
-- **`destroy()`** – Cleans up sockets and resources on module removal
-- **`configUpdated(config)`** – Reacts to any configuration change and reinitializes if needed
+### Available Preset Categories
 
----
+- **CHANNEL**
+  - Presets for selecting the active MixBoard channel (`CH-0` to `CH-3`)
+  - Includes feedback to indicate which channel is currently selected
+
+- **PROGRAM INPUT**
+  - Presets for assigning a VideoInput directly to the program bus of the current channel
+  - Feedback highlights the active program VideoInput
+
+- **PREVIEW INPUT**
+  - Presets for assigning a VideoInput to the preview bus of the current channel
+  - Feedback highlights the selected preview VideoInput
+
+- **TRANSITIONS**
+  - Presets to execute transitions such as `CUT`, `FADE`, `TR1`, `TR2`, `TR3`, `TR4`
+  - Includes visual feedback for active transition selection
+
+- **KEYERS**
+  - Presets to toggle keyers (`BKGD` to `KEY4`)
+  - Feedback reflects each keyer’s current playback state (Program, Preview, or Stopped)
+
+- **KEY LINK**
+  - Presets to enable/disable the transition link option for each keyer
+  - Feedback shows the current link status of the keyer
+
+Each preset is configured with the proper action, arguments, and feedback bindings for real-time updates and immediate visual confirmation of MixBoard’s state.
 
 ## Troubleshooting
 
@@ -75,17 +90,9 @@ These can be used to update button colors or labels in Companion dynamically.
 - Enable `protocollog` in the module settings to log all incoming TCP responses for debugging.
 - Watch Companion’s log for connection status or errors.
 
----
-
-## License
-
-MIT License
-
----
-
 ## Maintainer
 
-This module is maintained by Dar of ClassX.
+This module is maintained by Dar of ClassX®.
 
 For issues or contributions, please use the [GitHub Issues](https://github.com/dar-dev/companion-module-classx-mixboard/issues) page.
 
