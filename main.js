@@ -177,6 +177,7 @@ class MixBoardInstance extends InstanceBase {
 					text: keyer,
 					size: '14',
 					color: rgb(255, 255, 255),
+					show_topbar: false
 				},
 				steps: [
 					{
@@ -242,9 +243,10 @@ class MixBoardInstance extends InstanceBase {
 				category: 'Keyers',
 				name: `${keyer} Link`,
 				style: {
-					text: `🔗\n${keyer}`,
+					text: `⁌${keyer}⁍`,
 					size: '14',
 					color: rgb(255, 255, 255),
+					show_topbar: false
 				},
 				steps: [
 					{
@@ -292,6 +294,7 @@ class MixBoardInstance extends InstanceBase {
 					text: `${takeMode}`,
 					size: '14',
 					color: rgb(255, 255, 255),
+					show_topbar: false
 				},
 				steps: [
 					{
@@ -319,6 +322,7 @@ class MixBoardInstance extends InstanceBase {
 				text: `⏮`,
 				size: '18',
 				color: rgb(255, 255, 255),
+				show_topbar: false
 			},
 			steps: [
 				{
@@ -345,6 +349,7 @@ class MixBoardInstance extends InstanceBase {
 				text: `⏭`,
 				size: '18',
 				color: rgb(255, 255, 255),
+				show_topbar: false
 			},
 			steps: [
 				{
@@ -380,6 +385,7 @@ class MixBoardInstance extends InstanceBase {
 					text: `${label}`,
 					size: '14',
 					color: rgb(255, 255, 255),
+					show_topbar: false
 				},
 				steps: [
 					{
@@ -449,6 +455,7 @@ class MixBoardInstance extends InstanceBase {
 							size: '14',
 							color: rgb(255, 255, 255),
 							bgcolor: rgb(0, 0, 0),
+							show_topbar: false
 						},
 						steps: [
 							{
@@ -492,6 +499,7 @@ class MixBoardInstance extends InstanceBase {
 							text: inputName,
 							size: '14',
 							color: rgb(255, 255, 255),
+							show_topbar: false
 						},
 						steps: [
 							{
