@@ -15,6 +15,7 @@ class MixBoardInstance extends InstanceBase {
 		this.videoInputList = []
 		this.keyerList = []
 		this.dataCallback = []
+		this.takeMode = []
 		this.STATUS = {
 			// companion feedbacks
 			STOPPED: 0,
@@ -27,6 +28,23 @@ class MixBoardInstance extends InstanceBase {
 			{ id: 'CH_1', label: 'CH-1' },
 			{ id: 'CH_2', label: 'CH-2' },
 			{ id: 'CH_3', label: 'CH-3' },
+		]
+
+		this.TAKEMODE_CHOICES = [
+			{ id: 'CUT', label: 'CUT' },
+			{ id: 'FADE', label: 'FADE' },
+			{ id: 'TR1', label: 'TR1' },
+			{ id: 'TR2', label: 'TR2' },
+			{ id: 'TR3', label: 'TR3' },
+			{ id: 'TR4', label: 'TR4' },
+		]
+
+		this.KEYER_CHOICES = [
+			{ id: 0, label: 'BKGD' },
+			{ id: 1, label: 'KEY1' },
+			{ id: 2, label: 'KEY2' },
+			{ id: 3, label: 'KEY3' },
+			{ id: 4, label: 'KEY4' },
 		]
 
 		this.transitionMode = [
@@ -313,6 +331,75 @@ class MixBoardInstance extends InstanceBase {
 				],
 			}
 		})
+
+		// set take mode presets
+		this.TAKEMODE_CHOICES.forEach(choice => {
+			let takeMode = choice.id
+
+			// auto take
+			presets[`set_takemode_${takeMode}`] = {
+				type: 'button',
+				category: 'Transitions',
+				name: `Set \n${takeMode}`,
+				style: {
+					text: `set\n${takeMode}`,
+					size: '14',
+					color: rgb(255, 255, 255),
+					show_topbar: false
+				},
+				steps: [
+					{
+						down: [
+							{
+								actionId: 'set_takemode_action',
+								options: {
+									channel: null,
+									take_mode: takeMode,
+								},
+							},
+						],
+						up: [],
+					},
+				],
+				feedbacks: [
+					{
+						feedbackId: 'takemode_changed',
+						options: {
+							take_mode: takeMode,
+						},
+						style: {
+							bgcolor: rgb(177, 98, 19)
+						},
+					},
+				],
+			}
+		});
+
+		// auto take
+		presets[`auto_take`] = {
+			type: 'button',
+			category: 'Transitions',
+			name: `Auto Take`,
+			style: {
+				text: 'AUTO\nTAKE',
+				size: '14',
+				color: rgb(255, 255, 255),
+				show_topbar: false
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'autotake_action',
+							options: {
+								channel: null,
+							},
+						},
+					],
+					up: [],
+				},
+			],
+		}
 
 		// resume back
 		presets[`resume_backward`] = {
@@ -917,6 +1004,25 @@ class MixBoardInstance extends InstanceBase {
 					return feedback.options.channel == this.currentChannel
 				},
 			},
+
+			takemode_changed: {
+				type: 'boolean',
+				name: 'Take mode changed',
+				description: 'The current Take mode has changed',
+				options: [
+					{
+						id: 'take_mode',
+						type: 'dropdown',
+						label: 'Take Mode',
+						choices: this.TAKEMODE_CHOICES,
+						default: "CUT",
+					},
+				],
+				callback: (feedback) => {
+					 let currentTakeMode = this.takeMode[this.currentChannel] || 'CUT';
+					return currentTakeMode == feedback.options.take_mode
+				},
+			},
 		})
 	}
 
@@ -955,13 +1061,7 @@ class MixBoardInstance extends InstanceBase {
 						type: 'dropdown',
 						label: 'Keyer',
 						id: 'keyer_id',
-						choices: [
-							{ id: 0, label: 'BKGD' },
-							{ id: 1, label: 'KEY1' },
-							{ id: 2, label: 'KEY2' },
-							{ id: 3, label: 'KEY3' },
-							{ id: 4, label: 'KEY4' },
-						],
+						choices: this.KEYER_CHOICES,
 						default: 1,
 					},
 					{
@@ -1002,13 +1102,7 @@ class MixBoardInstance extends InstanceBase {
 						type: 'dropdown',
 						label: 'Keyer',
 						id: 'keyer_id',
-						choices: [
-							{ id: 0, label: 'BKGD' },
-							{ id: 1, label: 'KEY1' },
-							{ id: 2, label: 'KEY2' },
-							{ id: 3, label: 'KEY3' },
-							{ id: 4, label: 'KEY4' },
-						],
+						choices: this.KEYER_CHOICES,
 						default: 1,
 					},
 				],
@@ -1017,6 +1111,53 @@ class MixBoardInstance extends InstanceBase {
 					let link = !this.getKeyer(options.keyer_id).linkEnabled
 					this.sendCommand(`MBC_SETLINKKEYERTOTRANSITION CHANNEL="${channel}",KEYERID="${options.keyer_id}",LINK=${link}`)
 					this.sendCommand(`UPDATEGUI`)
+				},
+			},
+
+			set_takemode_action: {
+				name: 'Set take mode',
+				description: 'Select the take mode to execute on AUTO take command',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Channel',
+						id: 'channel',
+						choices: this.CHANNEL_CHOICES,
+						default: 'CH_0',
+					},
+					{
+						type: 'dropdown',
+						label: 'Take Mode',
+						id: 'take_mode',
+						choices: this.TAKEMODE_CHOICES,
+						default: 'CUT',
+					},
+				],
+				callback: ({ options }) => {
+					//this.log('error', 'executing action: ' +  options.take_mode)
+					let channel = options.channel ?? this.currentChannel
+					this.takeMode[channel] = options.take_mode;
+					this.checkFeedbacks('takemode_changed')
+				},
+			},
+
+			autotake_action: {
+				name: 'Auto Take',
+				description: 'Auto take transition following the current take mode',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Channel',
+						id: 'channel',
+						choices: this.CHANNEL_CHOICES,
+						default: 'CH_0',
+					},
+				],
+				callback: ({ options }) => {
+					let channel = options.channel ?? this.currentChannel
+					let takeMode = this.takeMode[channel] ?? 'CUT';
+					const cmd = `MBC_TAKE CHANNEL="${channel}",TAKE_MODE="${takeMode}"`
+					this.sendCommand(cmd)
 				},
 			},
 
@@ -1035,14 +1176,7 @@ class MixBoardInstance extends InstanceBase {
 						type: 'dropdown',
 						label: 'Take Mode',
 						id: 'take_mode',
-						choices: [
-							{ id: 'CUT', label: 'CUT' },
-							{ id: 'FADE', label: 'FADE' },
-							{ id: 'TR1', label: 'TR1' },
-							{ id: 'TR2', label: 'TR2' },
-							{ id: 'TR3', label: 'TR3' },
-							{ id: 'TR4', label: 'TR4' },
-						],
+						choices: this.TAKEMODE_CHOICES,
 						default: 'CUT',
 					},
 				],
@@ -1106,6 +1240,7 @@ class MixBoardInstance extends InstanceBase {
 					let channel = options.channel ?? this.currentChannel
 					const cmd = `MBC_SETPREVIEWVIDEOINPUTID CHANNEL="${channel}",VIDEOINPUTID="${options.videoinput_id}"`
 					this.sendCommand(cmd)
+					this.sendCommand(`UPDATEGUI`)
 				},
 			},
 
@@ -1133,6 +1268,7 @@ class MixBoardInstance extends InstanceBase {
 					let channel = options.channel ?? this.currentChannel
 					const cmd = `MBC_SETPROGRAMVIDEOINPUTID CHANNEL="${channel}",VIDEOINPUTID="${options.videoinput_id}"`
 					this.sendCommand(cmd)
+					this.sendCommand(`UPDATEGUI`)
 				},
 			},
 
