@@ -32,6 +32,8 @@ Once the module is configured, the following actions become available in Compani
 - **Set Program VideoInput** – Set the VideoInput id to display to program
 - **Set Preview VideoInput** – Set the VideoInput id to display to preview
 - **Take** – Take transitions like `CUT`, `FADE`, `TR1`, etc.
+- **Set Take mode** – Set the Take mode to execute on next `Auto Take`
+- **Auto Take** – Automatically take following the current take mode set from `Set Take mode`
 - **Resume transition** – Resumed the paused transitions following the given direction (`BACKWARD` | `FORWARD`)
 - **Toggle Keyer** – Enable/disable keyers (`KEY1`, `KEY2`, etc.) to program/preview according to 'Play to preview' option
 - **Key link** – Enable/disable keyer transition link option to the given keyer (`KEY1`, `KEY2`, etc.) 
@@ -49,6 +51,7 @@ The module provides feedbacks to reflect the current state of the MixBoard:
 - **VideoInput name** – The VideoInput name has changed
 - **VideoInput on Preview** – The preview VideoInput has changed
 - **VideoInput on Program** – The program VideoInput has changed
+- **Take mode changed** – The current Take mode has changed
 
 These can be used to update button colors or labels in Companion dynamically.
 
@@ -72,6 +75,7 @@ The module provides built-in button presets for quick configuration inside Bitfo
 
 - **TRANSITIONS**
   - Presets to execute transitions such as `CUT`, `FADE`, `TR1`, `TR2`, `TR3`, `TR4`
+  - Allows user to select the Take mode such as `CUT`, `FADE`, `TR1`, `TR2`, `TR3`, `TR4` and then `AUTOTAKE`
   - Includes visual feedback for active transition selection
 
 - **KEYERS**
