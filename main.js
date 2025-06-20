@@ -524,9 +524,9 @@ class MixBoardInstance extends InstanceBase {
 				var jsonData = atob(data.toString().trim())
 				const obj = JSON.parse(jsonData);
 
-				this.maxVideoInput = parseInt(obj.MAXSUPPORTEDINPUTS);
+				this.maxVideoInput = parseInt(obj.MAX_SUPPORTED_INPUTS);
 
-				obj.VIDEOINPUTLIST.forEach((input) => {
+				obj.VIDEOINPUT.forEach((input) => {
 					const inputName = input.NAME.toString()
 					const inputId = parseInt(input.VIDEOINPUTID)
 
